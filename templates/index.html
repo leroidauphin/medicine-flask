@@ -1,0 +1,16 @@
+<html>
+<head>
+  <title>Medicine</title>
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+  <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+  <h1>Medicine</h1>
+
+  {% for dose in doses %}
+    <p>{{ dose.name }} next dose of {{ dose.med }} at {{ dose.datetime }}</p>
+  {% endfor %}
+
+</body>
+</html>
