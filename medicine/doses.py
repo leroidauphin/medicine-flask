@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 import pandas as pd
 
-from config import doses_file_path
+from medicine.config import doses_file_path
 
 
 
