@@ -1,9 +1,9 @@
 from datetime import datetime, timedelta
-from flask import Flask, render_template
+from flask import Flask, redirect, render_template, request
 import pandas as pd
 
 from medicine.config import people_file_path, medicines_file_path
-from medicine.doses import doses_last_24hrs
+from medicine.doses import add, doses_last_24hrs
 
 app = Flask(__name__)
 
@@ -38,12 +38,32 @@ def display_next_doses(people, medicines, doses):
 
 @app.route("/")
 def root():
-    people = pd.read_csv(people_file_path)
-    medicines = pd.read_csv(medicines_file_path) 
+    people_df = pd.read_csv(people_file_path)
+    medicines_df = pd.read_csv(medicines_file_path) 
     doses = doses_last_24hrs()
-    output_rows = display_next_doses(people, medicines, doses)
+    output_rows = display_next_doses(people_df, medicines_df, doses)
 
-    return render_template("index.html", doses=output_rows)
+    return render_template(
+        "index.html", 
+        people=people_df.to_dict(orient="records"), 
+        medicines=medicines_df.to_dict(orient="records"), 
+        doses=output_rows
+    )
+
+
+@app.route("/", methods=["POST"])
+def doses():
+    people_df = pd.read_csv(people_file_path)
+    medicines_df = pd.read_csv(medicines_file_path) 
+
+    people_name = request.form["Person"]
+    medicine_name = request.form["Medicine"]
+
+    person_id = people_df[people_df["name"] == people_name].index[0]
+    medicine_id = medicines_df[medicines_df["name"] == medicine_name].index[0]
+    add(person_id, medicine_id)
+
+    return redirect(request.url)
 
 
 if __name__ == "__main__":

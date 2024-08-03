@@ -12,5 +12,19 @@
     <p>{{ dose.name }} next dose of {{ dose.med }} at {{ dose.datetime }}</p>
   {% endfor %}
 
+  <form action="{{ url_for('doses') }}" method="post">
+    <select name="Person">
+      {% for person in people %}
+        <option value="{{ person.name }}">{{ person.name }}</option>
+      {% endfor %}
+    </select>
+    <select name="Medicine">
+      {% for medicine in medicines %}
+        <option value="{{ medicine.name }}">{{ medicine.name }}</option>
+      {% endfor %}
+    </select>
+    <button type="submit">New dose</button>
+  </form>
+
 </body>
 </html>
